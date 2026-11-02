@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: memory-layer-postgres
+    environment:
+      POSTGRES_DB: ${DB_NAME:-memory_layer}
+      POSTGRES_USER: ${DB_USERNAME:-memory_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-memory_password}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-memory_user} -d ${DB_NAME:-memory_layer}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - memory-layer-network
+
+  backend:
+    build: .
+    container_name: memory-layer-backend
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/${DB_NAME:-memory_layer}
+      DB_USERNAME: ${DB_USERNAME:-memory_user}
+      DB_PASSWORD: ${DB_PASSWORD:-memory_password}
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production-use-at-least-32-chars}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-3600000}
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - memory-layer-network
+
+networks:
+  memory-layer-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
