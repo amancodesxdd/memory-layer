@@ -78,6 +78,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // CSRF disabled: stateless JWT API; CORS + HttpOnly cookies provide protection
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/", "/index.html", "/assets/**", "/favicon.svg").permitAll() // Serve frontend static files
                         .requestMatchers("/api/auth/register", "/api/auth/login", "/api/auth/refresh").permitAll()
                         .requestMatchers("/api/auth/me").authenticated()
                         .requestMatchers("/api/memories/**").authenticated()
@@ -99,7 +100,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // Vite dev server
+        configuration.setAllowedOrigins(List.of("http://localhost:5173", "https://knowu.antideploy.app")); // Vite dev server + production
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-XSRF-TOKEN"));
         configuration.setExposedHeaders(List.of("Set-Cookie", "X-XSRF-TOKEN"));
