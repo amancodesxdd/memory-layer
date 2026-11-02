@@ -43,7 +43,10 @@ function getCookie(name) {
 
 function authHeaders() {
   const headers = { 'Content-Type': 'application/json' }
-  // CSRF protection: send XSRF-TOKEN cookie value as X-XSRF-TOKEN header
+  const token = getToken()
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`
+  }
   const xsrfToken = getCookie('XSRF-TOKEN')
   if (xsrfToken) {
     headers['X-XSRF-TOKEN'] = xsrfToken
@@ -90,12 +93,14 @@ async function request(path, { method = 'GET', body, headers = {} } = {}) {
 
 export async function register({ email, password }) {
   const data = await request('/auth/register', { method: 'POST', body: { email, password } })
+  setToken(data.accessToken)
   setUser({ userId: data.userId, email: data.email })
   return data
 }
 
 export async function login({ email, password }) {
   const data = await request('/auth/login', { method: 'POST', body: { email, password } })
+  setToken(data.accessToken)
   setUser({ userId: data.userId, email: data.email })
   return data
 }
