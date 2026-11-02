@@ -1,0 +1,176 @@
+/* AnimatedInput — per-character input with custom caret */
+
+.ai {
+  --ai-radius: 12px;
+  --ai-pad-x: 16px;
+  --ai-pad-y: 13px;
+  --ai-border: var(--line);
+  --ai-bg: var(--card);
+  --ai-font: inherit;
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  font-family: inherit;
+}
+
+.ai-shell {
+  position: relative;
+  border-radius: var(--ai-radius);
+  background: var(--ai-bg);
+  border: 1px solid var(--ai-border);
+  overflow: hidden;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.ai-shell:focus-within {
+  border-color: color-mix(in srgb, var(--ai-color) 55%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ai-color) 16%, transparent);
+}
+
+/* variants */
+
+.ai.ghost .ai-shell {
+  background: transparent;
+  border-color: transparent;
+}
+
+.ai.outline .ai-shell {
+  background: transparent;
+  border-color: var(--line);
+}
+
+.ai.filled .ai-shell {
+  background: var(--tile);
+  border-color: transparent;
+}
+
+.ai.terminal .ai-shell {
+  background: var(--ink);
+  border-color: var(--ink);
+  --ai-text: var(--bg-hi);
+}
+
+.ai.minimal .ai-shell {
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  padding: 0 2px;
+}
+
+.ai.pill .ai-shell {
+  border-radius: 999px;
+}
+
+.ai.pill .ai-layer,
+.ai.pill .ai-field {
+  padding: 13px 22px;
+}
+
+/* layer + native field share metrics */
+
+.ai-layer,
+.ai-field {
+  font: var(--ai-font);
+  font-size: 17px;
+  line-height: 1.45;
+  letter-spacing: -0.012em;
+  padding: var(--ai-pad-y) var(--ai-pad-x);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.ai-layer {
+  position: relative;
+  display: block;
+  min-height: calc(1.45em + var(--ai-pad-y) * 2);
+  color: var(--ai-text, var(--ink));
+  transform-origin: left center;
+}
+
+.ai-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  outline: none;
+  resize: none;
+  background: transparent;
+  color: transparent;
+  caret-color: transparent;
+  overflow: hidden;
+}
+
+.ai-field::selection {
+  background: transparent;
+}
+
+.ai-ch {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+.ai-placeholder {
+  position: absolute;
+  left: var(--ai-pad-x);
+  top: var(--ai-pad-y);
+  color: var(--faint);
+  pointer-events: none;
+}
+
+/* selection + caret */
+
+.ai-sel {
+  position: absolute;
+  left: 0;
+  top: var(--ai-pad-y);
+  height: 1.45em;
+  opacity: 0.22;
+  pointer-events: none;
+}
+
+.ai-caret {
+  position: absolute;
+  left: 0;
+  top: var(--ai-pad-y);
+  display: block;
+  pointer-events: none;
+}
+
+.ai-caret.v-line,
+.ai-caret.v-glow {
+  border-left: 2px solid var(--ai-color);
+  background: transparent;
+}
+
+.ai-caret.v-block {
+  background: var(--ai-color);
+  opacity: 0.85;
+}
+
+.ai-caret.v-underline {
+  height: 2px !important;
+  top: calc(var(--ai-pad-y) + 1.3em);
+}
+
+.ai-caret:not(.typing) {
+  animation: ai-blink 1.06s steps(1, end) infinite;
+  animation-duration: calc(var(--ai-blink, 530ms) * 2);
+}
+
+.ai-caret.typing {
+  animation: none;
+  opacity: 1;
+}
+
+@keyframes ai-blink {
+  0%,
+  45% {
+    opacity: 1;
+  }
+46%,
+  100% {
+    opacity: 0;
+  }
+}

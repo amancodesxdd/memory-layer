@@ -1,0 +1,66 @@
+/* Design tokens — shared theme for every component. Import once. */
+
+:root {
+  --bg-hi: #ffffff;
+  --bg-mid: #f6f5f2;
+  --bg-lo: #eceae5;
+  --surface: rgba(255, 255, 255, 0.62);
+  --field: rgba(255, 255, 255, 0.75);
+  --ink: #1b1b1f;
+  --muted: #6f6c65;
+  --faint: #a5a29a;
+  --line: rgba(27, 27, 31, 0.1);
+  --btn-ink: #6f6c65;
+  --accent-ink: #ffffff;
+  --accent-bg: #1b1b1f;
+  --shadow: rgba(27, 27, 31, 0.08);
+  --tile: #efefef;
+  --tile-2: #e6e6e4;
+  --card: #ffffff;
+  --stage: #eeeeec;
+  --rail: #f2f2f0;
+  --pill: #e6e6e3;
+  --tone-violet: #8b5cf6;
+  --tone-green: #10b981;
+  --tone-blue: #3b82f6;
+  --tone-orange: #f97316;
+  --tone-pink: #ec4899;
+  --pin-bg: #dbeafe;
+  --pin-fg: #2563eb;
+  --serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+  --muted-foreground: var(--muted);
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --bg-hi: #26272c;
+  --bg-mid: #1a1b1f;
+  --bg-lo: #101114;
+  --surface: rgba(255, 255, 255, 0.045);
+  --field: rgba(255, 255, 255, 0.06);
+  --ink: #f2f1ee;
+  --muted: #a3a0a9;
+  --faint: #706d78;
+  --line: rgba(255, 255, 255, 0.12);
+  --btn-ink: #b9b6c0;
+  --accent-ink: #14151a;
+  --accent-bg: #f2f1ee;
+  --shadow: rgba(0, 0, 0, 0.4);
+  --tile: #161619;
+  --tile-2: #0c0c0e;
+  --card: #17171a;
+  --stage: #0e0e11;
+  --rail: #1f1f23;
+  --pill: #2e2e34;
+  --pin-bg: #1d3a6b;
+  --pin-fg: #3b82f6;
+  --liquid-base: #05060a;
+  --liquid-1: rgba(139, 92, 246, 0.55);
+  --liquid-2: rgba(59, 130, 246, 0.5);
+  --liquid-3: rgba(236, 72, 153, 0.42);
+  --liquid-4: rgba(16, 185, 129, 0.4);
+  --glass: rgba(255, 255, 255, 0.05);
+  --glass-line: rgba(255, 255, 255, 0.09);
+  --glass-hi: rgba(255, 255, 255, 0.14);
+  color-scheme: dark;
+}

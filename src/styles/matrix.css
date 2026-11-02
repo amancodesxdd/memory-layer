@@ -1,0 +1,34 @@
+/* Matrix — LED dot-matrix display */
+
+.matrix {
+  position: relative;
+  display: inline-block;
+  color: var(--ink);
+}
+
+.matrix-svg {
+  display: block;
+  overflow: visible;
+}
+
+.matrix-pixel {
+  transition: opacity 300ms ease-out, transform 150ms ease-out;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+.matrix-pixel-active {
+  filter: url(#matrix-glow);
+}
+
+.matrix-pixel-off {
+  opacity: 0.2;
+}
+
+:root[data-theme="dark"] .matrix-pixel-off {
+  opacity: 0.1;
+}
+
+.matrix.reduced .matrix-pixel {
+  transition: none;
+}

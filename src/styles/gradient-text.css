@@ -1,0 +1,32 @@
+/* GradientText — animated gradient text reveal */
+
+.line {
+  margin: 0;
+  font-size: clamp(28px, 6.2vw, 68px);
+  line-height: 1.16;
+  font-weight: 500;
+  letter-spacing: -0.024em;
+  text-wrap: balance;
+  min-height: 1.18em;
+}
+
+.glyph {
+  display: inline-block;
+  opacity: 0;
+  will-change: transform, opacity, filter;
+  transform-origin: 50% 64%;
+  backface-visibility: hidden;
+}
+
+.gap {
+  display: inline-block;
+  width: 0.28em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glyph {
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
+  }
+}
