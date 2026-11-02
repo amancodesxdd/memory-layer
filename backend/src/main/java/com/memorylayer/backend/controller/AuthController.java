@@ -5,6 +5,7 @@ import com.memorylayer.backend.dto.AuthResponseDTO;
 import com.memorylayer.backend.dto.UserDTO;
 import com.memorylayer.backend.service.AuthService;
 import com.memorylayer.backend.service.JwtService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.time.Instant;
@@ -29,12 +31,21 @@ import java.time.Instant;
 @RequestMapping("/api/auth")
 public class AuthController {
 
+    private static final String ACCESS_COOKIE = "ACCESS_TOKEN";
+    private static final String REFRESH_COOKIE = "REFRESH_TOKEN";
+
     private final AuthService authService;
     private final JwtService jwtService;
+    private final boolean cookieSecure;
 
-    public AuthController(AuthService authService, JwtService jwtService) {
+    public AuthController(
+            AuthService authService,
+            JwtService jwtService,
+            @Value("${app.cookie.secure:true}") boolean cookieSecure
+    ) {
         this.authService = authService;
         this.jwtService = jwtService;
+        this.cookieSecure = cookieSecure;
     }
 
     @PostMapping("/register")
@@ -50,11 +61,11 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<AuthResponseDTO> refresh(@RequestHeader("Authorization") String authorization) {
-        if (authorization == null || !authorization.startsWith("Bearer ")) {
+    public ResponseEntity<AuthResponseDTO> refresh(HttpServletRequest request) {
+        String refreshToken = resolveToken(request, REFRESH_COOKIE);
+        if (refreshToken == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        String refreshToken = authorization.substring(7);
         AuthResponseDTO response = authService.refresh(refreshToken);
         return buildAuthResponse(HttpStatus.OK, response);
     }
@@ -68,12 +79,11 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        String jwt = resolveToken(request, ACCESS_COOKIE);
+        if (jwt == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        String jwt = authHeader.substring(7);
         String userId = jwtService.extractUserId(jwt);
 
         return ResponseEntity.ok(authService.getUser(userId));
